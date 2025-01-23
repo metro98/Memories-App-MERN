@@ -15,7 +15,13 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
-        # Step 3: Build and push images using docker-compose
+       # Step 3: Create .env file
+      - name: Create .env file
+        run: |
+          echo "REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}" >> .env
+          echo "CONNECTION_URL=${{ secrets.CONNECTION_URL }}" >> .env
+
+        # Step 4: Build and push images using docker-compose
       - name: Build and push images
         run: |
           docker compose build --push
