@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./client
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - mern_network
+
+  backend:
+    build:
+      context: ./server
+    ports:
+      - "5000:5000"
+    environment:
+      - CONNECTION_URL=mongodb://database:27017/memories
+    depends_on:
+      - database
+    networks:
+      - mern_network
+
+  database:
+    image: mongo:latest
+    container_name: mongo_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mern_network
+
+networks:
+  mern_network:
+    driver: bridge
+
+volumes:
+  mongo_data:

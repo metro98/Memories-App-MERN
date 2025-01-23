@@ -1,0 +1,45 @@
+- hosts: frontend
+  become: true
+
+  tasks:
+    - name: Install Docker on frontend server (if not already installed)
+      ansible.builtin.apt:
+        name:
+          - docker.io
+        state: present
+
+    - name: Start Docker service on frontend server
+      ansible.builtin.service:
+        name: docker
+        state: started
+
+    - name: Pull frontend image from Docker Hub on frontend server
+      command:
+        cmd: docker pull "{{ lookup('env', 'DOCKER_USERNAME') }}/memories-frontend"
+
+    - name: Run frontend container on frontend server with port mapping for HTTP traffic 
+      command:
+        cmd: docker run -d --name frontend -p 80:80 "{{ lookup('env', 'DOCKER_USERNAME') }}/memories-frontend"
+
+- hosts: backend
+  become: true
+
+  tasks:
+    - name: Install Docker on backend server (if not already installed)
+      ansible.builtin.apt:
+        name:
+          - docker.io
+        state: present
+
+    - name: Start Docker service on backend server
+      ansible.builtin.service:
+        name: docker
+        state: started
+
+    - name: Pull backend image from Docker Hub on backend server 
+      command:
+        cmd: docker pull "{{ lookup('env', 'DOCKER_USERNAME') }}/memories-backend"
+
+    - name: Run backend container on backend server with port mapping for API traffic 
+      command:
+        cmd: docker run -d --name backend -p 5000:5000 "{{ lookup('env', 'DOCKER_USERNAME') }}/memories-backend"

@@ -1,0 +1,17 @@
+node_modules
+build
+.env
+# Ignore Terraform files and folders
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+
+# Ignore Python virtual environment
+venv/
+
+# Ignore log files
+*.log
+
+# Ignore system files
+.DS_Store
+Thumbs.db
