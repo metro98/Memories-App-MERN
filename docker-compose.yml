@@ -5,7 +5,7 @@ services:
     build:
       context: ./client
     env_file:
-      - .env
+      - ./client/.env
     image: alioth729/memories-frontend
     ports:
       - "3000:80"
@@ -18,7 +18,7 @@ services:
     build:
       context: ./server
     env_file:
-      - .env
+      - ./server/.env
     image: alioth729/memories-backend
     ports:
       - "5000:5000"
