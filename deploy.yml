@@ -15,11 +15,11 @@
 
     - name: Pull frontend image from Docker Hub on frontend server
       command:
-        cmd: docker pull "{{ lookup('env', 'DOCKER_USERNAME') }}/memories-frontend"
+        cmd: docker pull "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/memories-frontend"
 
     - name: Run frontend container on frontend server with port mapping for HTTP traffic 
       command:
-        cmd: docker run -d --name frontend -p 80:80 "{{ lookup('env', 'DOCKER_USERNAME') }}/memories-frontend"
+        cmd: docker run -d --name frontend -p 80:80 "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/memories-frontend"
 
 - hosts: backend
   become: true
@@ -38,8 +38,8 @@
 
     - name: Pull backend image from Docker Hub on backend server 
       command:
-        cmd: docker pull "{{ lookup('env', 'DOCKER_USERNAME') }}/memories-backend"
+        cmd: docker pull "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/memories-backend"
 
     - name: Run backend container on backend server with port mapping for API traffic 
       command:
-        cmd: docker run -d --name backend -p 5000:5000 "{{ lookup('env', 'DOCKER_USERNAME') }}/memories-backend"
+        cmd: docker run -d --name backend -p 5000:5000 "{{ lookup('env', 'DOCKERHUB_USERNAME') }}/memories-backend"
