@@ -45,11 +45,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: echo "AWS credentials configured"
 
-      # Step 4: Inject SSH private key into environment variable
-      - name: Set up SSH private key
-        env:
-          TF_VAR_private_key: ${{ secrets.EC2_PRIVATE_KEY }}
-        run: echo "SSH private key set for Terraform"
 
       # Step 5: Initialize Terraform
       - name: Initialize Terraform

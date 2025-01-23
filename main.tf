@@ -2,11 +2,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# Variable for Private Key
-variable "private_key" {
-  description = "Private SSH key for accessing instances"
-  type        = string
-}
 
 # Security Group to Allow HTTP and SSH Traffic
 resource "aws_security_group" "web_sg" {
@@ -48,21 +43,9 @@ resource "aws_instance" "frontend" {
 
   security_groups = [aws_security_group.web_sg.name] # Attach security group
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo yum update -y",
-      "sudo yum install docker -y", # Install Docker on Amazon Linux
-      "sudo service docker start",
-      "sudo usermod -aG docker ec2-user" # Add ec2-user to the Docker group
-    ]
-  }
 
-  connection {
-    type        = "ssh"
-    user        = "ec2-user" # Default user for Amazon Linux AMIs
-    private_key = var.private_key
-    host        = self.public_ip
-  }
+
+
 }
 
 # Backend Instance
@@ -76,21 +59,9 @@ resource "aws_instance" "backend" {
 
   security_groups = [aws_security_group.web_sg.name] # Attach security group
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo yum update -y",
-      "sudo yum install docker -y", # Install Docker on Amazon Linux
-      "sudo service docker start",
-      "sudo usermod -aG docker ec2-user" # Add ec2-user to the Docker group
-    ]
-  }
 
-  connection {
-    type        = "ssh"
-    user        = "ec2-user" # Default user for Amazon Linux AMIs
-    private_key = var.private_key
-    host        = self.public_ip
-  }
+
+ 
 }
 
 # Outputs for Public IPs of Instances
