@@ -4,8 +4,6 @@ services:
   frontend:
     build:
       context: ./client
-    env_file:
-      - .env
     image: metro98/memories-frontend
     ports:
       - "3000:80"
@@ -17,8 +15,6 @@ services:
   backend:
     build:
       context: ./server
-    env_file:
-      - .env
     image: metro98/memories-backend
     ports:
       - "5000:5000"
