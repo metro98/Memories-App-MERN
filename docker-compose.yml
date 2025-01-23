@@ -6,7 +6,7 @@ services:
       context: ./client
     env_file:
       - .env
-    image: metro98/memories-frontend
+    image: alioth729/memories-frontend
     ports:
       - "3000:80"
     depends_on:
@@ -19,7 +19,7 @@ services:
       context: ./server
     env_file:
       - .env
-    image: metro98/memories-backend
+    image: alioth729/memories-backend
     ports:
       - "5000:5000"
     environment:
