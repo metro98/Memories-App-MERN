@@ -14,7 +14,6 @@ COPY . .
 ENV NODE_OPTIONS=--openssl-legacy-provider
 RUN npm run build
 
-COPY .env .env
 
 
 # Stage 2: Serve React app with Nginx
