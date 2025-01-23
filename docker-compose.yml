@@ -4,7 +4,7 @@ services:
   frontend:
     build:
       context: ./client
-    image: metro98/memories-frontend
+    image: alioth729/memories-frontend
     ports:
       - "3000:80"
     depends_on:
@@ -15,7 +15,7 @@ services:
   backend:
     build:
       context: ./server
-    image: metro98/memories-backend
+    image: alioth729/memories-backend
     ports:
       - "5000:5000"
     environment:
