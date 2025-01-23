@@ -3,6 +3,11 @@ provider "aws" {
   region = "us-east-1"
 }
 
+variable "private_key" {
+  description = "Private SSH key for accessing instances"
+  type        = string
+}
+
 resource "aws_instance" "frontend" {
   ami           = "ami-0df8c184d5f6ae949" # Replace with a valid Ubuntu AMI ID for your region.
   instance_type = "t2.micro"
@@ -20,8 +25,8 @@ resource "aws_instance" "frontend" {
 
   connection {
     type     = "ssh"
-    user     = "ubuntu"
-    private_key = file("~/.ssh/id_rsa") # Replace with the path to your private SSH key.
+    user     = "ec2-user"
+    private_key = var.private_key # Replace with the path to your private SSH key.
     host     = self.public_ip
   }
 }
@@ -43,8 +48,8 @@ resource "aws_instance" "backend" {
 
   connection {
     type     = "ssh"
-    user     = "ubuntu"
-    private_key = file("~/.ssh/id_rsa") # Replace with the path to your private SSH key.
+    user     = "ec2-user"
+    private_key = var.private_key # Replace with the path to your private SSH key.
     host     = self.public_ip
   }
 }
