@@ -1,7 +1,7 @@
 name: CI/CD Pipeline
 
 on:
-  workflow_dispatch: # Trigger manually
+  workflow_dispatch:
 
 jobs:
   build-and-push-docker-images:
@@ -29,8 +29,12 @@ jobs:
   provision-infrastructure:
     runs-on: ubuntu-latest
 
+    outputs:
+      frontend_ip: ${{ steps.apply_terraform.outputs.frontend_ip }}
+      backend_ip: ${{ steps.apply_terraform.outputs.backend_ip }}
+
     steps:
-      # Step 1: Checkout code
+      # Step 1: Checkout code for Terraform files
       - name: Checkout code for Terraform files
         uses: actions/checkout@v3
 
@@ -45,52 +49,27 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: echo "AWS credentials configured"
 
-
-      # Step 5: Initialize Terraform
+      # Step 4: Initialize Terraform
       - name: Initialize Terraform
         run: terraform init
 
-      # Step 6: Apply Terraform configuration
+      # Step 5: Apply Terraform configuration and capture outputs
       - name: Apply Terraform configuration
-        run: terraform apply -auto-approve
-
+        id: apply_terraform
+        run: |
+          terraform apply -auto-approve
+          echo "::set-output name=frontend_ip::$(terraform output -raw frontend_ip)"
+          echo "::set-output name=backend_ip::$(terraform output -raw backend_ip)"
 
   configure-and-deploy-app:
     runs-on: ubuntu-latest
+
+    needs:
+      - provision-infrastructure
 
     steps:
       - name: Install Ansible
         run: sudo apt-get update && sudo apt-get install ansible -y
 
-      # Step 1: Configure SSH Private Key
-      - name: Configure SSH Key for EC2 Access
-        run: |
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      # Step 2: Add EC2 Hosts to Known Hosts (to avoid interactive prompt)
-      - name: Add EC2 Hosts to Known Hosts
-        run: |
-          ssh-keyscan -H ${{ steps.terraform_outputs.outputs.frontend_ip }} >> ~/.ssh/known_hosts
-          ssh-keyscan -H ${{ steps.terraform_outputs.outputs.backend_ip }} >> ~/.ssh/known_hosts
-
-      # Step 3: Get Terraform Outputs (Frontend and Backend IPs)
-      - name: Get Terraform outputs
-        id: terraform_outputs
-        run: |
-          FRONTEND_IP=$(terraform output -raw frontend_ip)
-          BACKEND_IP=$(terraform output -raw backend_ip)
-          echo "::set-output name=frontend_ip::$FRONTEND_IP"
-          echo "::set-output name=backend_ip::$BACKEND_IP"
-
-      # Step 4: Create Dynamic Ansible Inventory File with EC2 IPs
-      - name: Create Dynamic Ansible Inventory File
-        run: |
-          echo "[frontend]" > inventory
-          echo "${{ steps.terraform_outputs.outputs.frontend_ip }}" >> inventory
-          echo "[backend]" >> inventory
-          echo "${{ steps.terraform_outputs.outputs.backend_ip }}" >> inventory
-
-      # Step 5: Run Ansible Playbook for Configuration and Deployment
-      - name: Run Ansible Playbook to Deploy Application on EC2 Instances
-        run: ansible-playbook deploy.yml --inventory inventory
+      # Step 1. Configure SSH Private Key for EC2 Access.
+      - name :Configure SSH Key

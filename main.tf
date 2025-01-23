@@ -1,6 +1,6 @@
 provider "aws" {
-  region = "us-east-1"
-}
+     region = "us-east-1"
+  }
 
 
 # Security Group to Allow HTTP and SSH Traffic
@@ -40,7 +40,7 @@ resource "aws_instance" "frontend" {
   tags = {
     Name = "frontend-instance"
   }
-
+    key_name = "ronin_key"
   security_groups = [aws_security_group.web_sg.name] # Attach security group
 
 
@@ -56,11 +56,8 @@ resource "aws_instance" "backend" {
   tags = {
     Name = "backend-instance"
   }
-
-  security_groups = [aws_security_group.web_sg.name] # Attach security group
-
-
-
+    key_name = "ronin_key"
+    security_groups = [aws_security_group.web_sg.name] # Attach security group
  
 }
 
