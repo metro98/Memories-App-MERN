@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-and-push-docker-images:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -25,7 +25,7 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/memories-frontend
 
   provision-infrastructure:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code for Terraform files
@@ -47,7 +47,7 @@ jobs:
         run: terraform apply -auto-approve
 
   configure-and-deploy-app:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Install Ansible
